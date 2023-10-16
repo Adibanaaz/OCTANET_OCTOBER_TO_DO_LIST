@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>To-Do List</title>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <div class="task-form">
+            <input type="text" id="task" placeholder="Add a task...">
+            <input type="date" id="deadline">
+            <select id="priority">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+            <button onclick="addTask()">Add</button>
+        </div>
+        <ul id="task-list">
+        </ul>
+        <div id="progress">
+            <span>Progress: <span id="progress-count">0</span> / <span id="total-count">0</span></span>
+        </div>
+    </div>
+
+    <script>
+        let taskId = 0;
+
+        function addTask() {
+            const taskInput = document.getElementById("task");
+            const deadlineInput = document.getElementById("deadline");
+            const priorityInput = document.getElementById("priority");
+            const taskList = document.getElementById("task-list");
+
+            const task = taskInput.value.trim();
+            const deadline = deadlineInput.value;
+            const priority = priorityInput.value;
+
+            if (task) {
+                taskId++;
+
+                const taskItem = document.createElement("li");
+                taskItem.innerHTML = `
+                    <input type="checkbox" id="task-${taskId}" onchange="updateProgress()">
+                    <label for="task-${taskId}">
+                        <span class="task-name">${task}</span>
+                        <span class="deadline">Deadline: ${deadline}</span>
+                        <span class="priority">Priority: ${priority}</span>
+                    </label>
+                    <button class="delete" onclick="deleteTask(${taskId})">Delete</button>
+                `;
+
+                taskList.appendChild(taskItem);
+                updateProgress();
+                taskInput.value = "";
+                deadlineInput.value = "";
+            }
+        }
+
+        function deleteTask(id) {
+            const taskItem = document.getElementById("task-" + id);
+            taskItem.remove();
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const totalTasks = document.querySelectorAll("input[type='checkbox']").length;
+            const completedTasks = document.querySelectorAll("input[type='checkbox']:checked").length;
+            const progressCount = document.getElementById("progress-count");
+            const totalCount = document.getElementById("total-count");
+
+            progressCount.textContent = completedTasks;
+            totalCount.textContent = totalTasks;
+        }
+    </script>
+</body>
+</html>
